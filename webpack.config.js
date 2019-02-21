@@ -29,8 +29,13 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader',
-          'sass-loader'
-        ]
+          {
+            loader: 'sass-loader',
+            options: {
+              //data: `$mainColor: #272e76`,
+            }
+          }
+        ],
       },
       {
         test: /\.pug$/,
@@ -43,6 +48,16 @@ module.exports = {
           limit: 10000,
           name: 'images/[name].[ext]',
         },
+      },
+      {
+        test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: 'fonts/[name].[ext]',
+            publicPath: '../'       // override the default path
+          }
+        }]
       },
     ]
   },
