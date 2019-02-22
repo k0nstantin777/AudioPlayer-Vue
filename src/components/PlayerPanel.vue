@@ -2,20 +2,20 @@
     div.player-box.player-main-panel.flex.justify-space-between
         div.player-controls
             span.icon.fa.fa-step-backward
-            span.icon.fa(:class="{'fa-play':!play, 'fa-pause':play}" @click="togglePlay()")
+            span.icon.fa(:class="{'fa-play':!isPlay, 'fa-pause':isPlay}" @click="isPlay ? $emit('pause') : $emit('play')")
             span.icon.fa.fa-step-forward
         div.player-track.flex.align-center
             progress#progressbar(value="50" max="100")
-            audio#track(:src="playingTrack.link") 
+            audio#track(:src="playingTrack ? playingTrack.link : null") 
         div.player-volume.flex.align-center
             input(type="range") 
 </template>
 <script>
 export default {
-    attrs: [play],
+    props: ['isPlay'],
     data: function(){
         return {
-            play: false,
+           
         }
     },
     computed: {
@@ -23,14 +23,20 @@ export default {
             return this.$store.state.currentTrack;
         } 
     },
+    methods: {
+
+    },
     watch: {
-        play (newValue, OldValue){
+        isPlay (newValue, OldValue){
+            if(!this.playingTrack){
+                return;
+            }
             if(newValue){
-                this.play = false;
-                document.querySelector('audio#track').pause();
+                //this.play = false;
+                document.querySelector('audio#track').play();
             } else {
-                this.play = true;
-                document.querySelector('audio#track').play();    
+                //this.play = true;
+                document.querySelector('audio#track').pause();    
             }
         }
     }

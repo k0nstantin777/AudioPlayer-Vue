@@ -13,8 +13,7 @@
 export default {
     data: function(){
         return {
-            //tracks: this.$store.state.tracks,
-            
+                
         }
     },
     computed: {
@@ -27,7 +26,10 @@ export default {
     },
     methods: {
         playTrack(id){
-            this.$store.dispatch('setCurrentTrack', id);
+            let self = this;
+            this.$store.dispatch('setCurrentTrack', id).then(function(){
+                self.$emit('play');
+            });
         }
     }
 }

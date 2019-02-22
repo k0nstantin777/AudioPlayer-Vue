@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     state: {
         tracks: {},
         currentTrack: '',
+        play: false,
     },
     getters: {
         currentTrack: (state) => {
@@ -20,7 +21,10 @@ const store = new Vuex.Store({
         },
         setCurrentTrack (state, id){
             state.currentTrack = state.tracks.find(track => track.id === id);
-        }
+        },
+        // togglePlay () {
+        //     state.play = !state.play;
+        // }
     },
     actions: {
         getStorage (context) {

@@ -1,9 +1,9 @@
 <template lang="pug">
     section.container
         div.player.player-aria.flex.flex-wrap
-            player-panel
+            player-panel(:isPlay="isPlay" @play="play" @pause="pause")
             player-search
-            player-list
+            player-list(@play="play" @pause="pause")
             
 </template>
 <script>
@@ -11,7 +11,7 @@ import PlayerPanel from './PlayerPanel.vue';
 import PlayerSearch from './PlayerSearch.vue';
 import PlayerList from './PlayerList.vue';
 
-export default {
+export default { 
     components:{
         PlayerPanel,
         PlayerSearch,
@@ -19,7 +19,7 @@ export default {
     },
     data: function(){
         return {
-            
+            isPlay: false,
         }
     },
     methods: {
@@ -28,6 +28,12 @@ export default {
         },
         playTrack(id){
             this.$store.dispatch('setCurrentTrack', id);
+        },
+        play(){
+            this.isPlay = true;
+        },
+        pause(){
+            this.isPlay = false;
         }
     },
     created(){
