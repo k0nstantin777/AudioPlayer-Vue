@@ -1,11 +1,11 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import player from './components/player.vue';
+import Player from './components/Player.vue';
+import store from './../store';
 import './assets/styles/style.scss';
+import Vue from 'vue';
 
-Vue.use(Vuex);
 
 const app = new Vue({
     el: '#app',
-    render: h => h(player)
+    render: h => h(Player),
+    store
 });

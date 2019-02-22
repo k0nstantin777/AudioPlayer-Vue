@@ -1,3 +1,6 @@
+$fa-font-path: "~font-awesome/fonts";
+@import '~font-awesome/scss/font-awesome.scss';
+
 *{
     padding:0;
     margin:0; 
@@ -16,5 +19,29 @@ h1 {
 
 .container {
     max-width: 1024px;
+    padding: 0 2%;
     margin: auto;
+}
+
+.flex {
+    display:flex;
+    &.align-center{
+        align-items: center;
+        align-content: center;
+    }
+    &.justify-space-between{
+        justify-content: space-between;
+    }
+    &.flex-wrap{
+        flex-wrap:wrap;
+    }
+    &.justify-center{
+        justify-content: center;
+    }
+    &.direction-column{
+        flex-direction: column;
+    }
+    &.basis-100{
+        flex-basis: 100%;
+    }
 }

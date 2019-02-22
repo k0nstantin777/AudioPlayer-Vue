@@ -42,7 +42,7 @@ module.exports = {
         loader: 'pug-plain-loader'
       },
       {
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        test: /\.(png|jpg|gif|svg)$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
@@ -54,8 +54,9 @@ module.exports = {
         use: [{
           loader: 'file-loader',
           options: {
-            name: 'fonts/[name].[ext]',
-            publicPath: '../'       // override the default path
+            name: '[name].[ext]',
+            outputPath: 'fonts/',    // where the fonts will go
+            publicPath: 'fonts'       // override the default path
           }
         }]
       },
