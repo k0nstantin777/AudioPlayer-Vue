@@ -32,7 +32,6 @@ export default {
     },
     created(){
         this.getTracks();
-        this.playTrack(1);
     }
 }
 </script>

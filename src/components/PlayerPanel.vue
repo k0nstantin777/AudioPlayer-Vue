@@ -12,6 +12,7 @@
 </template>
 <script>
 export default {
+    attrs: [play],
     data: function(){
         return {
             play: false,
@@ -22,17 +23,16 @@ export default {
             return this.$store.state.currentTrack;
         } 
     },
-    methods: {
-        togglePlay(){
-            if(this.play){
+    watch: {
+        play (newValue, OldValue){
+            if(newValue){
                 this.play = false;
-                document.querySelector('audio').pause()
+                document.querySelector('audio#track').pause();
             } else {
                 this.play = true;
-                document.querySelector('audio').play()    
+                document.querySelector('audio#track').play();    
             }
-            
-        }    
+        }
     }
 }
 </script>
@@ -49,6 +49,9 @@ export default {
                     cursor: pointer;
                     &:active{
                         text-shadow: none;
+                    }
+                    &.fa-play, &.fa-pause{
+                        max-width: 33px;
                     }
                 }
             }
