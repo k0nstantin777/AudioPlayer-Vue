@@ -1,16 +1,19 @@
 <template lang="pug">
-    ul.player-box.player-track-list
-        li.flex.align-center(
-            v-for="track in tracks"
-            :class="{active:track.id === currentTrack.id}"
-            @click="playTrack(track.id)"    
-        ) 
-            div.flex.flex-wrap.justify-space-between.basis-100
-                span.track-info {{track.name}} - {{track.author}} 
-                span.track-duration {{track.duration}}
+    div.player-box
+        p.no-tracks(v-if="!tracks.length") Ничего не найдено попытайтесь изменить строку поиска
+        ul.player-track-list(v-else)
+            li.flex.align-center(
+                v-for="track in tracks"
+                :class="{active:track.id === currentTrack.id}"
+                @click="toggleTrack(track.id)"    
+            ) 
+                div.flex.flex-wrap.justify-space-between.basis-100
+                    span.track-info {{track.name}} - {{track.author}} 
+                    span.track-duration {{track.duration}}
 </template>
 <script>
 export default {
+    props: ['isPlay'],
     data: function(){
         return {
                 
@@ -25,11 +28,16 @@ export default {
         } 
     },
     methods: {
-        playTrack(id){
-            let self = this;
-            this.$store.dispatch('setCurrentTrack', id).then(function(){
-                self.$emit('play');
-            });
+        toggleTrack(id){
+            if(this.isPlay && id === this.currentTrack.id){
+                this.$emit('on-pause');    
+            } else {
+                let self = this;
+                this.$store.dispatch('setCurrentTrack', id).then(function(){
+                    self.$emit('on-play', id);
+                });
+            }
+            
         }
     }
 }
@@ -64,6 +72,9 @@ export default {
                     border-radius: 5px;
                 }
             }
+        }
+        .no-tracks{
+            color:#fff;
         }
     }
 </style>

@@ -1,9 +1,19 @@
 <template lang="pug">
     section.container
         div.player.player-aria.flex.flex-wrap
-            player-panel(:isPlay="isPlay" @play="play" @pause="pause")
-            player-search
-            player-list(@play="play" @pause="pause")
+            player-panel(
+                :isPlay="isPlay"
+                @on-play="play"
+                @on-pause="pause"
+                @on-next="next"
+                @on-previous="previous"
+            )
+            player-search(@on-search="search")
+            player-list(
+                :isPlay="isPlay"
+                @on-play="play"
+                @on-pause="pause"
+            )
             
 </template>
 <script>
@@ -20,20 +30,42 @@ export default {
     data: function(){
         return {
             isPlay: false,
+            volume: 100,
+        }
+    },
+    computed:{
+        nextTrack(){
+            return this.$store.getters.nextTrack;
+        },
+        previousTrack(){
+            return this.$store.getters.previousTrack;
         }
     },
     methods: {
-        getTracks(){
-            this.$store.dispatch('getStorage');
+        getTracks(searchString){
+            this.$store.dispatch('getTracks', searchString);
         },
-        playTrack(id){
-            this.$store.dispatch('setCurrentTrack', id);
+        setCurrentTrack(id){
+            return this.$store.dispatch('setCurrentTrack', id);
         },
-        play(){
-            this.isPlay = true;
+        play(id){
+            this.isPlay = false;
+            let self = this;
+            this.setCurrentTrack(id).then(function(){
+                self.isPlay = true;
+            });
         },
         pause(){
             this.isPlay = false;
+        },
+        next(){
+            this.play(this.nextTrack.id);
+        },
+        previous(){
+            this.play(this.previousTrack.id);
+        },
+        search(searchString){
+            this.getTracks(searchString);
         }
     },
     created(){

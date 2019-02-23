@@ -1,10 +1,12 @@
 <template lang="pug">
     div.player-box.player-search
-        input(type="search" placeholder="Search for artist or tracks")
+        input(
+            type="search"
+            placeholder="Search for artist or tracks"
+            @input="$emit('on-search', $event.target.value)"
+        )
 </template>
 <script>
-import PlayerPanel from './PlayerPanel.vue';
-
 export default {
     data: function(){
         return {
