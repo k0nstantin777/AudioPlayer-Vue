@@ -9,14 +9,17 @@
             ) 
                 div.flex.flex-wrap.justify-space-between.basis-100
                     span.track-info {{track.name}} - {{track.author}} 
-                    span.track-duration {{track.duration}}
+                    span.track-duration {{track.id === currentTrack.id ? currentTrackDuration : track.duration}}
 </template>
 <script>
+import Timer from './../assets/js/Timer.js'
 export default {
     props: ['isPlay'],
     data: function(){
         return {
-                
+            currentTrackDuration: 0,
+            timer: null, 
+            timeout: undefined,   
         }
     },
     computed: {
@@ -27,17 +30,53 @@ export default {
             return this.$store.state.currentTrack;
         } 
     },
+    watch: {
+        currentTrack(track){
+            this.changeTrack(track.id)
+        },
+        isPlay(value){
+            if(value) this.timerTick();   
+        }
+    },
     methods: {
         toggleTrack(id){
             if(this.isPlay && id === this.currentTrack.id){
-                this.$emit('on-pause');    
+                this.pause();  
+            } else if (!this.isPlay && id === this.currentTrack.id) {
+                this.play(id);
             } else {
-                let self = this;
-                this.$store.dispatch('setCurrentTrack', id).then(function(){
-                    self.$emit('on-play', id);
-                });
+                this.changeTrack(id);
             }
-            
+        },
+        play(id){
+            this.$emit('on-play', id);  
+        },
+        pause(){
+            this.$emit('on-pause');  
+        },
+        changeTrack(id){
+            const self = this;
+            this.timer = null;
+            this.$store.dispatch('setCurrentTrack', id).then(function(){                   
+                self.timerInit();
+                self.$emit('on-play', id);
+            });    
+        },
+        timerInit(){
+            this.currentTrackDuration = this.currentTrack.duration;
+            if(this.timeout !== undefined){
+                clearTimeout(this.timeout);    
+            }
+            this.timer = new Timer(this.currentTrackDuration);
+        },
+        timerTick(){
+            let self = this;
+            this.timeout = setTimeout(function(){
+                if(self.isPlay){
+                    self.currentTrackDuration = self.timer.tick();  
+                    self.timerTick();  
+                }
+            },1000) 
         }
     }
 }
@@ -52,7 +91,7 @@ export default {
             color: #272e76;
             li{
                 list-style: none;
-                height: 30px;
+                min-height: 30px;
                 padding: 5px;
                 span{
                     &.track-duration{

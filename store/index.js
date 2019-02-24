@@ -12,24 +12,25 @@ const store = new Vuex.Store({
     },
     getters: {
         nextTrack: (state) => {
-            if(!state.currentTrack 
-                || state.currentTrack === state.tracks[state.tracks.length -1]
-                || !state.tracks[state.currentTrack.id + 1]
-            ){
+            if(!state.currentTrack || state.currentTrack === state.tracks[state.tracks.length -1]){
                 return state.tracks[0];
-            } else {
-                return state.tracks.find(track => track.id === state.currentTrack.id + 1);
+            } 
+            let track = state.tracks.find(track => track.id === state.currentTrack.id + 1);
+            if (!track){
+                track = state.tracks[0];
             }
+            return track;
+            
         },
         previousTrack: (state) => {
-            if(!state.currentTrack 
-                || state.currentTrack === state.tracks[0]
-                || !state.tracks[state.currentTrack.id - 1]
-            ){
+            if(!state.currentTrack || state.currentTrack === state.tracks[0]){
                 return state.tracks[state.tracks.length - 1];
-            } else {
-                return state.tracks.find(track => track.id === state.currentTrack.id - 1);
+            } 
+            let track = state.tracks.find(track => track.id === state.currentTrack.id - 1);
+            if (!track){
+                track = state.tracks[state.tracks.length - 1];
             }
+            return track;
         }
     },
     mutations: {
