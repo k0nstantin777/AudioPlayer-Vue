@@ -1,41 +1,61 @@
 class Timer {
-    constructor(time){
-        this.time = time;
+    constructor(startTime){
+        this.startTime = startTime;
         this.init();
     }
 
     init(){
-        this.parsedTime = this.parseTimeString();
+        this.parsedTime = this.parseTimeString(this.startTime);
     }
 
-    parseTimeString(){
-        let splitedTime = this.time.split(':');
+    parseTimeString(timeString){
+        let splitedTiime = timeString.split(':');
         return {
-            minutes: splitedTime[0].length > 1 ? splitedTime[0][1] : splitedTime[0],
-            tenSeconds: splitedTime[1].length > 1 ? splitedTime[1][0] : 0,
-            seconds: splitedTime[1].length > 1 ? splitedTime[1][1] : splitedTime[1]
+            minutes: splitedTiime[0],
+            seconds: splitedTiime[1]
         }
     }
 
     tick (){
-        if(this.parsedTime.minutes == 0 && this.parsedTime.seconds == 0 && this.parsedTime.tenSeconds == 0 && this.parsedTime.tenMinutes ) {
-            return this.timeToString();
-        }
-        if (this.parsedTime.seconds > 0) {
-            this.parsedTime.seconds--;
-        } else if(this.parsedTime.seconds == 0 && this.parsedTime.tenSeconds != 0){
-            this.parsedTime.tenSeconds--;
-            this.parsedTime.seconds = 9;
-        } else if(this.parsedTime.tenSeconds == 0 && this.parsedTime.seconds == 0) {
-            this.parsedTime.minutes--;
-            this.parsedTime.tenSeconds = 5;
-            this.parsedTime.seconds = 9;
-        } 
-        return this.timeToString();
+        let time = this.getDateObjectByParsedTime(this.parsedTime);
+        time.setSeconds(time.getSeconds()-1);
+        let currentTime = this.timeToString(time);
+        this.parsedTime = this.parseTimeString(currentTime);
+        return currentTime;
     }
 
-    timeToString(){
-        return `${this.parsedTime.minutes}:${this.parsedTime.tenSeconds}${this.parsedTime.seconds}`
+    getDateObjectByParsedTime(parsedTime){
+        let time = new Date();
+        time.setMinutes(parsedTime.minutes);
+        time.setSeconds(parsedTime.seconds);
+        return time;
+    }
+
+    setTimeByProgress(progress){
+        let parsedTime = this.parseTimeString(this.startTime);
+        let seconds = this.getSecondsByParsedTime(parsedTime);
+        let currentProgressInSeconds = seconds - Math.floor(seconds*progress);
+        let time = this.getDateObjectBySeconds(currentProgressInSeconds);
+        let currentTime = this.timeToString(time);
+        this.parsedTime = this.parseTimeString(currentTime);
+        return currentTime;
+    }
+
+    getSecondsByParsedTime(parsedTime){
+        return +parsedTime.minutes*60 + +parsedTime.seconds;
+    }
+
+    getDateObjectBySeconds(seconds){
+        let time = new Date();
+        time.setMinutes(0);
+        time.setSeconds(seconds);
+        return time;
+    }
+
+    timeToString(time){
+        let seconds = time.getSeconds();
+        seconds = seconds > 9 ? seconds : '0'+seconds;
+        return `${time.getMinutes()}:${seconds}`
     }
 }
 

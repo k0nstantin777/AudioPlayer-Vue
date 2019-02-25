@@ -7,10 +7,12 @@
                 @on-pause="pause"
                 @on-next="next"
                 @on-previous="previous"
+                @set-progress="progress = $event"
             )
             player-search(@on-search="search")
             player-list(
                 :isPlay="isPlay"
+                :progress="progress"
                 @on-play="play"
                 @on-pause="pause"
             )
@@ -31,6 +33,7 @@ export default {
         return {
             isPlay: false,
             volume: 100,
+            progress: 0,
         }
     },
     computed:{

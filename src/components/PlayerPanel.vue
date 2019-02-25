@@ -6,13 +6,17 @@
             span.icon.fa.fa-step-forward(@click="$emit('on-next')")
         div.player-track.flex.align-center
             progress#progressbar(:value="progress" :max="duration")
-            audio#track(:src="currentTrack ? currentTrack.link : null") 
+            audio#track(
+                :src="currentTrack ? currentTrack.link : null"
+                @timeupdate="progress = $event.target.currentTime;"
+                @ended="$emit('on-next');"
+            ) 
         div.player-volume.flex.align-center
             input(
                 min="0" max="1" step="0.05"
                 type="range"
                 @input="setVolume($event.target.value)"
-                v-bind:value="volume"
+                :value="volume"
             ) 
 </template>
 <script>
@@ -47,26 +51,12 @@ export default {
         getDuration(){
             return Math.ceil(this.audioElement.duration);
         },
-        progressBarInit(){
-            const self = this;
-            setTimeout(function(){
-                if(self.isPlay && self.progress < self.duration){
-                    self.progress = (+self.progress + 0.01).toFixed(2);
-                    self.progressBarInit();
-                }
-            }, 10);
-        },
-        initEvents(){
-            const self = this;
-            this.audioElement.ontimeupdate = function(){
-                self.progress = this.currentTime;
-            };
-            this.audioElement.onended = function(){
-                self.$emit('on-next');
-            };    
+        initProgressEventHandler(){
+            const self = this;   
             this.progressBarElement.onclick = function(e){
-                let progressPercent = e.offsetX/this.offsetWidth;
-                self.audioElement.currentTime = self.audioElement.duration * progressPercent;
+                let progress = e.offsetX/this.offsetWidth;
+                self.audioElement.currentTime = self.audioElement.duration * progress;
+                self.$emit('set-progress', progress);
             }
         }
     },
@@ -79,7 +69,7 @@ export default {
                 const self = this;
                 this.audioElement.play().then(function(){
                     self.duration = self.getDuration();
-                    self.initEvents();
+                    self.initProgressEventHandler();
                 });
             } else {
                 this.audioElement.pause();    

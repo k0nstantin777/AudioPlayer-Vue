@@ -6,7 +6,7 @@
                 v-for="track in tracks"
                 :class="{active:track.id === currentTrack.id}"
                 @click="toggleTrack(track.id)"    
-            ) 
+                ) 
                 div.flex.flex-wrap.justify-space-between.basis-100
                     span.track-info {{track.name}} - {{track.author}} 
                     span.track-duration {{track.id === currentTrack.id ? currentTrackDuration : track.duration}}
@@ -14,7 +14,7 @@
 <script>
 import Timer from './../assets/js/Timer.js'
 export default {
-    props: ['isPlay'],
+    props: ['isPlay', 'progress'],
     data: function(){
         return {
             currentTrackDuration: 0,
@@ -36,6 +36,11 @@ export default {
         },
         isPlay(value){
             if(value) this.timerTick();   
+        },
+        progress(value){
+            if(value){
+                this.currentTrackDuration = this.timer.setTimeByProgress(value);
+            }
         }
     },
     methods: {
@@ -59,7 +64,7 @@ export default {
             this.timer = null;
             this.$store.dispatch('setCurrentTrack', id).then(function(){                   
                 self.timerInit();
-                self.$emit('on-play', id);
+                self.play(id);
             });    
         },
         timerInit(){

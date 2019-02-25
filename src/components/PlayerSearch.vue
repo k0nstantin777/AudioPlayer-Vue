@@ -7,13 +7,7 @@
         )
 </template>
 <script>
-export default {
-    data: function(){
-        return {
-            
-        }
-    }
-}
+export default {}
 </script>
 <style lang="scss">
     .player{

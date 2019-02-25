@@ -8,7 +8,6 @@ const store = new Vuex.Store({
     state: {
         tracks: {},
         currentTrack: '',
-        play: false,
     },
     getters: {
         nextTrack: (state) => {
